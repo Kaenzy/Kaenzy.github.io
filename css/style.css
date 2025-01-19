@@ -1,0 +1,229 @@
+/* ============================== */
+/*         GLOBAL + RESET         */
+/* ============================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* allow scroll if needed */
+  font-family: sans-serif; /* fallback */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* ============================== */
+/*      BACKGROUND + OVERLAY      */
+/* ============================== */
+
+.background {
+  position: fixed;
+  inset: 0;
+  background: url("../images/kitty.jpg") center center / cover no-repeat;
+  z-index: -2;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  z-index: -1;
+}
+
+/* ============================== */
+/*     MAIN CONTENT, CENTERED     */
+/* ============================== */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* ============================== */
+/*         WATERMARK TEXT         */
+/* ============================== */
+
+.watermark {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin: 8px;
+  font-family: "Jersey 15", serif;
+  font-size: clamp(1rem, 1.5vw, 2rem);
+  color: #333;
+  opacity: 0.6;
+  z-index: 999;
+}
+
+/* ============================== */
+/*        CAT GIF (FIXED)         */
+/* ============================== */
+
+.bottom-cat {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: clamp(60px, 5vw, 80px);
+  height: auto;
+  z-index: 999999; 
+  user-select: none;
+}
+
+/* ============================== */
+/*      WELCOME HEADING (JARO)    */
+/* ============================== */
+
+.welcome-heading {
+  font-family: "Jaro", serif;
+  font-size: clamp(2rem, 6vw, 5rem);
+  color: #000;
+  text-align: center;
+  margin-bottom: 1rem;
+
+  opacity: 0;
+  animation: fadeIn 1.5s forwards ease;
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================== */
+/*       MULTI-LINE TYPING        */
+/* ============================== */
+
+.typed-lines {
+  text-align: center;
+  max-width: 80%;
+  margin-bottom: 2rem;
+}
+
+.typed-line {
+  font-family: "Jersey 15", serif;
+  font-size: clamp(1rem, 2.5vw, 1.8rem);
+  color: #333;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px  1px 0 #fff;
+
+  display: block;
+  margin: 0.3rem 0;
+  overflow: hidden;
+}
+
+/* blinking caret only while .typing-caret is active */
+.typed-line.typing-caret {
+  position: relative;
+}
+
+.typed-line.typing-caret::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  background-color: #333;
+  margin-left: 2px;
+  animation: blink-caret 0.8s steps(1) infinite;
+  vertical-align: bottom;
+}
+
+@keyframes blink-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ============================== */
+/*            ICONS               */
+/* ============================== */
+
+.icons {
+  display: flex;
+  gap: clamp(1rem, 3vw, 3rem);
+  margin-bottom: 2rem;
+}
+
+/* Icons scale on hover */
+.icon img {
+  width: clamp(64px, 6vw, 100px);
+  height: clamp(64px, 6vw, 100px);
+  cursor: pointer; 
+  transition: transform 0.3s ease;
+}
+
+.icon:hover img {
+  transform: scale(1.2);
+}
+
+/* Pastebin slides from the bottom (1.5s) */
+.pastebin-icon {
+  opacity: 0;
+  animation: slideFromBottom 1.5s forwards;
+  animation-delay: 2s; /* optional delay so it appears after typed text */
+}
+
+@keyframes slideFromBottom {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ============================== */
+/*  TOP-LEFT "SECRET :D" BUTTON   */
+/* ============================== */
+
+.secret-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.3rem 0.3rem;
+  border: none;
+  border-radius: 12px;
+  background-color: #673ab7; /* purple */
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none; /* for <a> tag */
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.secret-btn:hover {
+  background-color: #512da8; /* darker purple on hover */
+}
+
+/* ============================== */
+/*    MEDIA QUERY FOR PHONES      */
+/* ============================== */
+
+@media screen and (max-width: 600px) {
+  .welcome-heading {
+    font-size: 2.5rem; 
+  }
+  .typed-line {
+    font-size: 1.4rem;
+  }
+  .icon img {
+    width: 80px;
+    height: 80px;
+  }
+}

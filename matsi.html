@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Matsi Page</title>
+  <style>
+    /* Basic reset & styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    /* 
+       Make the body fill the screen, 
+       center content, and show the entire donpollo.png 
+       using background-size: contain 
+    */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      background: url("images/donpollo.png") center center no-repeat;
+      background-size: contain; /* show the entire image without cutting */
+      font-family: sans-serif;
+      position: relative; /* so absolute-positioned Tyler can move within this */
+    }
+
+    /* Big heading in the middle */
+    h1 {
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+      margin-bottom: 1.5rem; /* space below text */
+      z-index: 1; /* keep text above background */
+    }
+
+    /* "Go Back" button below the text (in normal flow) */
+    .back-btn {
+      padding: 0.8rem 1.2rem;
+      border: none;
+      border-radius: 12px;
+      background-color: #ff5722; /* orange-ish */
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      margin-bottom: 2rem; /* space below button if you want it */
+      z-index: 1; /* above background */
+    }
+    .back-btn:hover {
+      background-color: #e64a19;
+    }
+
+    /*
+       Draggable Tyler image (absolute), so you can move it around. 
+       "touch-action: none" ensures dragging won't scroll the page on mobile.
+    */
+    #tyler {
+      position: absolute;
+      left: 70%;         /* or any default position you like */
+      top: 50%;          /* you can tweak these values */
+      width: 120px;      /* size of Tyler */
+      height: auto;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      user-select: none;
+      touch-action: none; 
+      z-index: 9999;     /* on top of background + text */
+      transition: transform 0.1s; /* smooth transition */
+    }
+    #tyler:active {
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>MatsiFratsi</h1>
+
+  <!-- A bit below the text -->
+  <a href="index.html" class="back-btn">Go Back</a>
+
+  <!-- Draggable Tyler image absolutely positioned -->
+  <img id="tyler" src="images/tyler.png" alt="Tyler" role="img" aria-label="Draggable image of Tyler" />
+
+  <script>
+    const tyler = document.getElementById('tyler');
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+
+    tyler.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      tyler.setPointerCapture(e.pointerId);
+
+      // Use pageX/pageY to avoid jump when scrolled
+      const rect = tyler.getBoundingClientRect();
+      offsetX = e.clientX - rect.left; // Use clientX for consistent behavior
+      offsetY = e.clientY - rect.top;   // Use clientY for consistent behavior
+
+      isDragging = true;
+    });
+
+    tyler.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+
+      // Keep Tyler in viewport
+      const rect = tyler.getBoundingClientRect();
+      const imgW = rect.width;
+      const imgH = rect.height;
+      const maxX = window.innerWidth - imgW;
+      const maxY = window.innerHeight - imgH;
+
+      const newX = e.clientX - offsetX; // Use clientX for consistent behavior
+      const newY = e.clientY - offsetY; // Use clientY for consistent behavior
+
+      // clamp
+      const clampedX = Math.min(Math.max(newX , 0), maxX);
+      const clampedY = Math.min(Math.max(newY, 0), maxY);
+
+      tyler.style.left = clampedX + "px";
+      tyler.style.top = clampedY + "px";
+    });
+
+    tyler.addEventListener('pointerup', () => {
+      isDragging = false;
+    });
+    tyler.addEventListener('pointercancel', () => {
+      isDragging = false;
+    });
+    tyler.addEventListener('pointerleave', () => {
+      isDragging = false; // Stop dragging if the pointer leaves the image
+    });
+  </script>
+</body>
+</html>
