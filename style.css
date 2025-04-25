@@ -829,3 +829,9 @@ code.script-code {
         opacity: 0;
     }
 }
+
+.download {
+    background-color: #00AA00;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 170, 0, 0.5);
+}
