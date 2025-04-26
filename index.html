@@ -63,6 +63,24 @@
 
         <section id="scripts" class="section">
             <h1>Kaenzy's Scripts</h1>
+
+
+            <div class="terminal-effect">
+                <div class="terminal-header">
+                    <span class="terminal-title">Kaenzy | Xeno Terminal</span>
+                    <div class="terminal-controls">
+                        <span class="terminal-dot minimize"></span>
+                        <span class="terminal-dot maximize"></span>
+                        <span class="terminal-dot close"></span>
+                    </div>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">Connecting to Kaenzy's Script database...</div>
+                    <div class="terminal-line">Access granted. Loading scripts...</div>
+                    <div class="terminal-line">Scripts loaded successfully.</div>
+                    <div class="terminal-line typing">Ready for execution_<span class="cursor"></span></div>
+                </div>
+            </div>
             
             <div class="script-container">
                 <div class="script">
@@ -183,6 +201,64 @@
             }
         }
 
+        // Add mouse interaction to particles
+document.addEventListener('mousemove', function(e) {
+    const particles = document.querySelectorAll('.particle');
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    particles.forEach(particle => {
+        // Calculate distance between particle and mouse
+        const rect = particle.getBoundingClientRect();
+        const particleX = rect.left + rect.width / 2;
+        const particleY = rect.top + rect.height / 2;
+        
+        const distX = mouseX - particleX;
+        const distY = mouseY - particleY;
+        const distance = Math.sqrt(distX * distX + distY * distY);
+        
+        // Move particles away from cursor when close
+        if (distance < 150) {
+            const angle = Math.atan2(distY, distX);
+            const pushX = Math.cos(angle) * (150 - distance) * 0.05;
+            const pushY = Math.sin(angle) * (150 - distance) * 0.05;
+            
+            particle.style.transform = `translate(${-pushX}px, ${-pushY}px)`;
+            particle.style.boxShadow = '0 0 15px var(--primary-glow)';
+        } else {
+            particle.style.transform = '';
+            particle.style.boxShadow = '0 0 10px var(--primary-glow)';
+        }
+    });
+    
+    // Make grid lines glow near cursor
+    const gridLines = document.querySelectorAll('.grid-line');
+    gridLines.forEach(line => {
+        const rect = line.getBoundingClientRect();
+        let linePos, mousePos;
+        
+        if (line.classList.contains('horizontal')) {
+            linePos = rect.top + rect.height / 2;
+            mousePos = mouseY;
+        } else {
+            linePos = rect.left + rect.width / 2;
+            mousePos = mouseX;
+        }
+        
+        const distance = Math.abs(mousePos - linePos);
+        
+        if (distance < 50) {
+            line.style.opacity = 0.5 + (50 - distance) / 100;
+            line.style.boxShadow = `0 0 ${(50 - distance) / 3}px var(--primary-color)`;
+        } else {
+            line.style.opacity = '';
+            line.style.boxShadow = '';
+        }
+    });
+});
+
+
+
         // Navigation functionality
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -203,16 +279,40 @@
 
         // Copy script functionality
         function copyScript(btn) {
-            const scriptCode = btn.closest('.script-header').nextElementSibling.textContent;
-            navigator.clipboard.writeText(scriptCode).then(() => {
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span>Copied!</span>';
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                }, 1500);
-            });
-        }
+    const scriptCode = btn.closest('.script-header').nextElementSibling.textContent;
+    navigator.clipboard.writeText(scriptCode).then(() => {
+        const originalText = btn.innerHTML;
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'copy-notification';
+        notification.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/>
+            </svg>
+            <span>Copied!</span>
+        `;
+        
+        btn.innerHTML = '<span>Copied!</span>';
+        
+        // Add notification to document
+        document.body.appendChild(notification);
+        
+        // Animate notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Remove notification
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+                btn.innerHTML = originalText;
+            }, 300);
+        }, 1500);
+    });
+}
         
         // Fullscreen view functionality
         function viewFullscreen(btn) {
