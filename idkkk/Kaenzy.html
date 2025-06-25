@@ -92,7 +92,7 @@
     </div>
     
     <!-- Audio Element (hidden) -->
-    <audio id="kaenzyAudio" autoplay loop>
+    <audio id="kaenzyAudio" loop>
         <source src="https://ia801507.us.archive.org/34/items/funk-tribu-phonky-tribu-mp3/funk-tribu-phonky-tribu-mp3.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -102,17 +102,25 @@
             const audio = document.getElementById('kaenzyAudio');
             const audioControl = document.querySelector('.audio-controls');
             
-            // Try to play audio (may be blocked by browsers)
-            audio.volume = 0.1;
-            const playPromise = audio.play();
+            audio.volume = 0.05; // Lower volume, still hearable
             
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay was prevented:", error);
-                    // Show play button if autoplay fails
-                    audioControl.classList.remove('hidden');
-                });
-            }
+            // Start playback on first user interaction
+            let interactionHandled = false;
+            const startAudio = () => {
+                if (!interactionHandled) {
+                    audio.play().catch(error => {
+                        console.log("Playback failed:", error);
+                    });
+                    interactionHandled = true;
+                    // Remove event listeners to avoid multiple triggers
+                    document.removeEventListener('click', startAudio);
+                    document.removeEventListener('touchstart', startAudio);
+                }
+            };
+            
+            // Listen for user interaction
+            document.addEventListener('click', startAudio);
+            document.addEventListener('touchstart', startAudio);
             
             // Toggle audio on button click
             audioControl.addEventListener('click', function() {
@@ -125,7 +133,7 @@
                 }
             });
             
-            // Check if audio is playing and update icon
+            // Update icon based on audio state
             audio.addEventListener('play', function() {
                 audioControl.innerHTML = '<i class="fas fa-music text-white text-xl"></i>';
             });
