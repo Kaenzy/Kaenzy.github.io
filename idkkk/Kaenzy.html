@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaenzy | The Legend</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2a0a0a 0%, #1a0000 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .card {
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5), 0 35px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+        
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .image-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+        }
+        
+        .audio-controls {
+            transition: all 0.3s ease;
+        }
+        
+        .audio-controls:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="w-full max-w-2xl mx-auto">
+        <div class="card bg-gray-800 rounded-xl overflow-hidden text-white">
+            <!-- Image Section -->
+            <div class="image-container h-96 w-full relative">
+                <img 
+                    src="car.jpg" 
+                    alt="Kaenzy" 
+                    class="w-full h-full object-cover"
+                >
+                <div class="absolute bottom-0 left-0 p-6 z-10">
+                    <h1 class="text-5xl font-bold tracking-tight mb-1 text-red-400 drop-shadow-[0_0_8px_rgba(255,0,0,0.6)]">KAENZY</h1>
+                    <p class="text-gray-300 text-lg">The Enlightened One</p>
+                </div>
+            </div>
+            
+            <!-- Content Section -->
+            <div class="p-8">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-16 h-1 bg-red-500 rounded-full"></div>
+                </div>
+                
+                <blockquote class="text-center text-xl italic text-gray-300 mb-8">
+                    "Once a wise man said: Kaenzy is not just a name, it's a state of being. 
+                    To embrace Kaenzy is to embrace the infinite wisdom of the universe."
+                </blockquote>
+                
+                <div class="flex justify-center">
+                    <div class="audio-controls bg-red-600 hover:bg-red-700 rounded-full p-4 cursor-pointer shadow-lg">
+                        <i class="fas fa-music text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Audio Element (hidden) -->
+    <audio id="kaenzyAudio" autoplay loop>
+        <source src="https://ia801507.us.archive.org/34/items/funk-tribu-phonky-tribu-mp3/funk-tribu-phonky-tribu-mp3.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('kaenzyAudio');
+            const audioControl = document.querySelector('.audio-controls');
+            
+            // Try to play audio (may be blocked by browsers)
+            audio.volume = 0.1;
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay was prevented:", error);
+                    // Show play button if autoplay fails
+                    audioControl.classList.remove('hidden');
+                });
+            }
+            
+            // Toggle audio on button click
+            audioControl.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    audioControl.innerHTML = '<i class="fas fa-music text-white text-xl"></i>';
+                } else {
+                    audio.pause();
+                    audioControl.innerHTML = '<i class="fas fa-play text-white text-xl"></i>';
+                }
+            });
+            
+            // Check if audio is playing and update icon
+            audio.addEventListener('play', function() {
+                audioControl.innerHTML = '<i class="fas fa-music text-white text-xl"></i>';
+            });
+            
+            audio.addEventListener('pause', function() {
+                audioControl.innerHTML = '<i class="fas fa-play text-white text-xl"></i>';
+            });
+        });
+    </script>
+</body>
+</html>
